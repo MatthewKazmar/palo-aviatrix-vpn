@@ -3,8 +3,12 @@ Spins up a metered Palo Alto in Azure and connects to an Aviatrix HA transit gat
 Also spins up a Windows VM to simulate an on-prem client.
 For lab/repro purposes.
 
+# Credentials
+* The username is adminuser for both firewall management and the client VM.
+* The password is shared between firewall management and the client VM.
+
 # Issues
-The terraform code expects Aviatrix HA Transit Gateway deployment. It'll complain otherwise.
+* The terraform code expects Aviatrix HA Transit Gateway deployment. It'll complain otherwise.
 
 # Requirements
 * Azure subscription
