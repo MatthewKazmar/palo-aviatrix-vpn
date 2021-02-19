@@ -7,11 +7,12 @@ For lab/repro purposes.
 The terraform code expects Aviatrix HA Transit Gateway deployment. It'll complain otherwise.
 
 # Requirements
-Azure subscription
-python3
-xmltodict module
-terraform in PATH
-deployed Aviatrix contoller with admin credentials (www.aviatrix.com)
+* Azure subscription
+* Azure CLI installed
+* python3
+* xmltodict module
+* terraform in PATH
+* deployed Aviatrix contoller with admin credentials (www.aviatrix.com)
 
 # Run it
 python deployfw.pw
