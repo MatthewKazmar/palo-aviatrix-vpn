@@ -4,6 +4,7 @@ variable tunnel_cidr { default = ["169.254.10.0/30","169.254.10.4/30"] } #2 /30 
 variable aviatrix_gateway_name { type = string }
 variable ext_subnet_cidr { type = string }
 variable int_subnet_cidr { type = string }
+variable client_subnet_cidr { type = string }
 variable controller_pip { type = string }
 variable controller_admin { type = string }
 variable CONTROLLER_PW { type = string }

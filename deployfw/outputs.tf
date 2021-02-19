@@ -17,3 +17,7 @@ output "external_subnet_cidr" {
 output "internal_subnet_cidr" {
   value = azurerm_subnet.subnet["internal"].address_prefixes[0]
 }
+
+output "client_subnet_cidr" {
+  value = azurerm_subnet.subnet["client"].address_prefixes[0]
+}

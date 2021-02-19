@@ -10,13 +10,15 @@ try:
   import xmltodict
 except:
   print(Fore.RED + "Python module xmltodict required for Palo API. Run pip install xmltodict.")
+  print(Fore.RESET)
   sys.exit(1)
 
 #requires terraform
 try:
-  terraform_present = subprocess('terraform',stdout=subprocess.DEVNULL)
+  terraform_present = subprocess.run('terraform',stdout=subprocess.DEVNULL)
 except:
   print(Fore.RED + "Terraform is required to be installed an in PATH.")
+  print(Fore.RESET)
   sys.exit(1)
 
 #disable self-signed warning
@@ -77,7 +79,7 @@ if not configurefwtfvars:
 #get controller info
 ipvalid = False
 while ipvalid == False:
-  controller_pip_input = input("Enter the public IP of the controller [{}]: ".format(configurefwtfvars['controller_pip']))
+  controller_pip_input = input(Fore.WHITE + "Enter the public IP of the controller [{}]: ".format(configurefwtfvars['controller_pip']))
   if not controller_pip_input:
     controller_pip_input = configurefwtfvars['controller_pip']
   try:
@@ -87,7 +89,7 @@ while ipvalid == False:
   else:
     ipvalid = True
 
-controller_admin_input = input("Please enter the username for the controller [{}]: ".format(configurefwtfvars['controller_admin']))
+controller_admin_input = input(Fore.WHITE + "Please enter the username for the controller [{}]: ".format(configurefwtfvars['controller_admin']))
 if controller_admin_input:
   configurefwtfvars['controller_admin'] = controller_admin_input
 
@@ -125,7 +127,7 @@ clientpw = fwpw
 #Get management/admin cidr
 cidrvalid = False
 while cidrvalid == False:
-  admincidr_input = input("Enter your management IP cidr to secure the fw/client interfaces [{}]: ".format(deployfwtfvars['admin_cidr']))
+  admincidr_input = input(Fore.WHITE + "Enter your management IP cidr to secure the fw/client interfaces [{}]: ".format(deployfwtfvars['admin_cidr']))
   if not admincidr_input:
     admincidr_input = deployfwtfvars['admin_cidr']
   try:
@@ -165,6 +167,7 @@ deployfwtfvarsfile = open(deployfwtfvarspath,'w')
 json.dump(deployfwtfvars,deployfwtfvarsfile,indent=2)
 deployfwtfvarsfile.close()
 
+print(Fore.RESET)
 #set up environment for deploy
 os.environ['TF_VAR_FW_PW'] = fwpw
 os.environ['TF_VAR_CLIENT_PW'] = clientpw
@@ -177,13 +180,16 @@ try:
     client_ip = terraform_output['client_ip']['value']
     external_subnet_cidr = terraform_output['external_subnet_cidr']['value']
     internal_subnet_cidr = terraform_output['internal_subnet_cidr']['value']
+    client_subnet_cidr = terraform_output['client_subnet_cidr']['value']
 except:
-    print("Problem with terraform output. Did it succeed?")
+    print(Fore.RED + "Problem with terraform output. Did it succeed?")
+    print(Fore.RESET)
     sys.exit()
 
 #write out tfvars for configure
 configurefwtfvars['ext_subnet_cidr'] = external_subnet_cidr
 configurefwtfvars['int_subnet_cidr'] = internal_subnet_cidr
+configurefwtfvars['client_subnet_cidr'] = client_subnet_cidr
 configurefwtfvarsfile = open(configurefwtfvarspath,'w')
 json.dump(configurefwtfvars,configurefwtfvarsfile,indent=2)
 configurefwtfvarsfile.close()
@@ -201,6 +207,7 @@ while not pan_api_key:
     print(Fore.YELLOW + "Couldn't get PAN API key. Is the device up? Sleeping 10 seconds.")
     time.sleep(10)
 
+print(Fore.RESET)
 #set up environment for configure
 os.environ['PANOS_HOSTNAME'] = pan_mgmt_ip
 os.environ['PANOS_API_KEY'] = pan_api_key
@@ -230,6 +237,7 @@ try:
   tunnel_cidr = terraform_output['tunnel_cidr']['value']
 except:
   print(Fore.RED + "Error getting the PSK, cannot configure the Aviatrix gateway.")
+  print(Fore.RESET)
   sys.exit(1)
 
 

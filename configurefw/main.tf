@@ -103,26 +103,10 @@ resource "panos_static_route_ipv4" "default_route" {
   next_hop = cidrhost(var.ext_subnet_cidr,1)
 }
 
-resource "panos_static_route_ipv4" "rfc10_route" {
-  name = "rfc10_route"
+resource "panos_static_route_ipv4" "client_subnet" {
+  name = "client_subnet"
   virtual_router = panos_virtual_router.default_vr.name
-  destination = "10.0.0.0/8"
-  interface = "ethernet1/2"
-  next_hop = cidrhost(var.int_subnet_cidr,1)
-}
-
-resource "panos_static_route_ipv4" "rfc172_route" {
-  name = "rfc172_route"
-  virtual_router = panos_virtual_router.default_vr.name
-  destination = "172.16.0.0/12"
-  interface = "ethernet1/2"
-  next_hop = cidrhost(var.int_subnet_cidr,1)
-}
-
-resource "panos_static_route_ipv4" "rfc192_route" {
-  name = "rfc192_route"
-  virtual_router = panos_virtual_router.default_vr.name
-  destination = "192.168.0.0/16"
+  destination = var.client_subnet_cidr
   interface = "ethernet1/2"
   next_hop = cidrhost(var.int_subnet_cidr,1)
 }
@@ -329,16 +313,31 @@ resource "panos_bgp_peer" "bgp_peer_2" {
   address_family_type = "ipv4"
 }
 
-resource "panos_redistribution_profile_ipv4" "redist" {
+resource "panos_redistribution_profile_ipv4" "redist_connect" {
     virtual_router = panos_virtual_router.default_vr.name
-    name = "redist"
+    name = "redist-connect"
     priority = 1
     action = "redist"
     types = ["connect"]
 }
 
-resource "panos_bgp_redist_rule" "redist_rule" {
+resource "panos_redistribution_profile_ipv4" "redist_static" {
+    virtual_router = panos_virtual_router.default_vr.name
+    name = "redist-static"
+    priority = 2
+    action = "redist"
+    types = ["static"]
+    interfaces = [ "ethernet1/2" ]
+}
+
+resource "panos_bgp_redist_rule" "redist-rule_connect" {
     virtual_router = panos_virtual_router.default_vr.name
     route_table = "unicast"
-    name = panos_redistribution_profile_ipv4.redist.name
+    name = panos_redistribution_profile_ipv4.redist_connect.name
+}
+
+resource "panos_bgp_redist_rule" "redist-rule-connect" {
+    virtual_router = panos_virtual_router.default_vr.name
+    route_table = "unicast"
+    name = panos_redistribution_profile_ipv4.redist_static.name
 }
