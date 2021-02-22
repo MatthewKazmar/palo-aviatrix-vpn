@@ -27,5 +27,5 @@ There are a series of questions, including the controller password. Once you ans
 * configureaviatrix
 
 # Why not all in Terraform
-Terraform providers can't use depends_on. The public IP of the firewall
+Terraform providers can't use depends_on. The public IP of the firewall is needed for the Panos provider block.
 The Panos provider can't commit changes, need to use the GUI/CLI/API.
